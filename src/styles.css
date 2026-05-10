@@ -1,0 +1,396 @@
+:root {
+  --paper: #fbfaf7;
+  --ink: #24211f;
+  --muted: #8c8781;
+  --line: #d8d0c8;
+  --line-dark: #2a2522;
+  --red: #d9342f;
+  --red-dark: #9f1f1c;
+  --red-light: #ef5b55;
+  --shadow: rgba(36, 33, 31, 0.08);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  color: var(--ink);
+  background: var(--paper);
+  font-size: 10pt;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--paper);
+}
+
+button,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.page-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 48px 20px;
+}
+
+.happy-bank {
+  width: min(100%, 420px);
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 10pt;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+h2 {
+  font-size: 10pt;
+  font-weight: 700;
+  text-align: center;
+}
+
+.mailbox-wrap {
+  width: 160px;
+  height: 178px;
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.mailbox-image {
+  width: 112px;
+  height: auto;
+  display: block;
+  image-rendering: pixelated;
+  transform-origin: center bottom;
+  z-index: 2;
+}
+
+.mailbox-envelope span,
+.mailbox-envelope::before,
+.mailbox-envelope::after {
+  content: '';
+  position: absolute;
+  display: block;
+  background: #fff9f1;
+}
+
+.mailbox-envelope span {
+  left: 5px;
+  top: 6px;
+  width: 14px;
+  height: 3px;
+  transform: rotate(36deg);
+}
+
+.mailbox-envelope::before {
+  left: 7px;
+  top: 6px;
+  width: 14px;
+  height: 3px;
+  transform: rotate(-36deg);
+}
+
+.mailbox-envelope::after {
+  left: 18px;
+  top: -1px;
+  width: 10px;
+  height: 3px;
+  transform: rotate(34deg);
+  opacity: 0;
+}
+
+
+.animated-note {
+  position: absolute;
+  width: 28px;
+  height: 34px;
+  border: 2px solid var(--line-dark);
+  background: #fffdf8;
+  opacity: 0;
+  z-index: 3;
+}
+
+.animated-note::before,
+.animated-note::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  height: 2px;
+  background: var(--line);
+}
+
+.animated-note::before {
+  top: 10px;
+  width: 15px;
+}
+
+.animated-note::after {
+  top: 18px;
+  width: 12px;
+}
+
+.is-depositing .animated-note {
+  animation: noteDeposit 780ms steps(8, end) forwards;
+}
+
+.is-depositing .mailbox-image {
+  animation: mailboxShake 260ms steps(2, end) 650ms;
+}
+
+.is-withdrawing .mailbox-image {
+  animation: mailboxShake 240ms steps(2, end) 620ms;
+}
+
+.is-withdrawing .animated-note {
+  animation: noteWithdraw 780ms steps(8, end) forwards;
+}
+
+.button {
+  min-width: 96px;
+  height: 38px;
+  border-radius: 4px;
+  border: 1px solid var(--line-dark);
+  background: transparent;
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.button-row {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.button:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.button-primary {
+  border-color: var(--red);
+  background: var(--red);
+  color: #fffdf8;
+}
+
+.button-secondary {
+  border-color: var(--line);
+  background: #fffdf8;
+  color: var(--ink);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(36, 33, 31, 0.38);
+  z-index: 10;
+}
+
+.memo-modal {
+  position: relative;
+  width: min(100%, 316px);
+  min-height: 236px;
+  padding: 38px 24px 28px;
+  border: 1px solid var(--line-dark);
+  background: #fffdf8;
+  box-shadow: 0 18px 42px var(--shadow);
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  padding: 0;
+}
+
+.memo-corner {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 26px;
+  height: 26px;
+  background:
+    linear-gradient(135deg, transparent 0 49%, var(--line-dark) 50% 54%, transparent 55%),
+    #fffdf8;
+  border-left: 1px solid var(--line-dark);
+  border-top: 1px solid var(--line-dark);
+}
+
+.memo-form,
+.result-box {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.memo-form textarea {
+  width: 100%;
+  height: 92px;
+  resize: none;
+  padding: 12px;
+  border: 1px solid var(--line);
+  background: #fffdf8;
+  color: var(--ink);
+  outline: none;
+}
+
+.memo-form textarea:focus {
+  border-color: var(--line-dark);
+}
+
+.memo-form textarea::placeholder {
+  color: var(--muted);
+}
+
+.memo-meta {
+  min-height: 15px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--muted);
+}
+
+.memo-submit,
+.result-close {
+  align-self: center;
+  min-width: 118px;
+  height: 38px;
+}
+
+.result-box p {
+  min-height: 100px;
+  padding: 18px 14px;
+  border: 1px solid var(--line-dark);
+  background: #fffdf8;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+@keyframes noteDeposit {
+  0% {
+    opacity: 0;
+    transform: translate(-18px, -82px) rotate(-3deg) scale(1);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-18px, -82px) rotate(-3deg) scale(1);
+  }
+  62% {
+    opacity: 1;
+    transform: translate(0, -42px) rotate(0deg) scale(0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0, -36px) rotate(0deg) scale(0.22);
+  }
+}
+
+@keyframes noteWithdraw {
+  0% {
+    opacity: 0;
+    transform: translate(0, -36px) rotate(0deg) scale(0.25);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(0, -42px) rotate(0deg) scale(0.58);
+  }
+  72% {
+    opacity: 1;
+    transform: translate(0, 36px) rotate(0deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0, 58px) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes mailboxShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  50% {
+    transform: translateX(2px);
+  }
+  75% {
+    transform: translateX(-1px);
+  }
+}
+
+@media (max-width: 520px) {
+  .page-shell {
+    padding: 32px 16px;
+  }
+
+  .happy-bank {
+    min-height: 480px;
+    gap: 26px;
+  }
+
+  .button-row {
+    gap: 16px;
+  }
+
+  .button {
+    min-width: 104px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
